@@ -88,7 +88,6 @@ async function _fetchFavicon(hostname: string) {
   return null
 }
 
-app.get("/", (c) => c.text("favicon.aspiz.uk"))
 app.get("/:domain", async (c) => {
   const hostname = _parseDomain(c.req.param("domain"))
   if (!hostname) {
