@@ -13,7 +13,7 @@ export default defineConfig({
     browser: true,
     node: true,
   },
-  ignorePatterns: [".pnpm-store/", "dist/", "node_modules/"],
+  ignorePatterns: [".cloudflare/", ".pnpm-store/", "dist/", "node_modules/"],
   options: {
     typeAware: true,
   },
