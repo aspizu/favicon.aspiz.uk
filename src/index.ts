@@ -12,9 +12,32 @@ const placeholder = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
   </g>
 </svg>`
 
+function _parseDomain(domain: string) {
+  const hostname = URL.parse(`https://${domain}`)?.hostname.replace(/\.$/, "")
+  if (!hostname) {
+    return null
+  }
+  const isTooLong = hostname.length > 253
+  const isTLD = !hostname.includes(".")
+  const isIPv4 = /\.\d+$/.test(hostname)
+  if (isTooLong || isTLD || isIPv4) {
+    return null
+  }
+  const hasValidLabels = hostname
+    .split(".")
+    .every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label))
+  if (!hasValidLabels) {
+    return null
+  }
+  return hostname
+}
+
 app.get("/", (c) => c.text("favicon.aspiz.uk"))
 app.get("/:domain", async (c) => {
-  const hostname = c.req.param("domain")
+  const hostname = _parseDomain(c.req.param("domain"))
+  if (!hostname) {
+    return c.text("Invalid domain", 400)
+  }
   const favicon = await sql(c)`
     SELECT * FROM favicons WHERE hostname = ${hostname}
   `.first()
@@ -26,14 +49,13 @@ app.get("/:domain", async (c) => {
       ON CONFLICT (hostname) DO NOTHING
     `.run()
   }
-  const key = hostname.toLowerCase()
-  let object = await c.env.BUCKET.get(key)
+  let object = await c.env.BUCKET.get(hostname)
   if (!object) {
-    await c.env.BUCKET.put(key, placeholder, {
+    await c.env.BUCKET.put(hostname, placeholder, {
       onlyIf: new Headers({"If-None-Match": "*"}),
       httpMetadata: {contentType: "image/svg+xml"},
     })
-    object = await c.env.BUCKET.get(key)
+    object = await c.env.BUCKET.get(hostname)
     if (!object) {
       return c.body(null, 503)
     }
