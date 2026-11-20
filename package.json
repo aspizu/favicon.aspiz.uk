@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "format": "oxfmt .",
+    "lint": "oxfmt --check . && oxlint .",
+    "typecheck": "tsc --noEmit",
+    "prepare": "lefthook install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,5 +21,14 @@
     }
   },
   "packageManager": "pnpm@12.21.0",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "lefthook": "^2.1.14",
+    "oxfmt": "^0.76.0",
+    "oxlint": "^1.85.0",
+    "oxlint-plugin-aspizuism": "^1.0.6",
+    "oxlint-tsgolint": "^7.0.2002",
+    "typescript": "^6.0.3"
+  }
 }
