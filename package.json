@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "node --watch-path=src --watch-path=cloudflare.config.ts --watch-path=scripts scripts/worker.ts --dev",
-    "build": "node scripts/worker.ts",
-    "deploy": "pnpm run build && cf deploy --prebuilt",
+    "dev": "cf dev",
+    "build": "cf build",
+    "deploy": "cf deploy",
+    "db:migrate": "cf d1 migrations apply 897e5f9a-b788-40e9-900c-ab8a77fda573",
     "format": "oxfmt .",
     "lint": "oxfmt --check . && oxlint .",
     "typecheck": "tsc --noEmit",
@@ -28,17 +29,16 @@
     "hono": "^4.13.17"
   },
   "devDependencies": {
-    "@cloudflare/build-output-utils": "0.9.10",
+    "@cloudflare/vite-plugin": "2.0.0-rc.1",
     "@cloudflare/workers-types": "^5.20261110.1",
     "@types/node": "^26.6.2",
-    "cf": "1.0.0-beta.28",
-    "esbuild": "^0.28.2",
+    "cf": "1.0.0-rc.2",
     "lefthook": "^2.1.14",
-    "miniflare": "5.20261109.0-beta",
     "oxfmt": "^0.76.0",
     "oxlint": "^1.85.0",
     "oxlint-plugin-aspizuism": "^1.0.6",
     "oxlint-tsgolint": "^7.0.2002",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5"
   }
 }
